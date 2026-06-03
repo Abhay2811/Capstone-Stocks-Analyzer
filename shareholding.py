@@ -67,7 +67,15 @@ HEADERS = {
     "Upgrade-Insecure-Requests": "1",
 }
 
+@st.cache_resource(show_spinner=False)
+def ensure_playwright_chromium():
+    subprocess.run(
+        [sys.executable, "-m", "playwright", "install", "chromium"],
+        check=False,
+        timeout=180,
+    )
 
+def clean_text(value):
 
 def clean_text(value):
     if value is None or (isinstance(value, float) and np.isnan(value)):
