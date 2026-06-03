@@ -1,0 +1,10 @@
+streamlit
+pandas
+numpy
+yfinance
+plotly
+pandas_ta
+scikit-learn
+nsepython
+selenium
+lxml
