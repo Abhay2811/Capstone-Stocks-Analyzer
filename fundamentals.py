@@ -3,8 +3,10 @@ import yfinance as yf
 import pandas as pd
 import json
 import os
+import re
+import requests
+from bs4 import BeautifulSoup
 
-# ========== NSE होल्डिंग (JSON फ़ाइल से) ==========
 def get_nse_holdings(symbol):
     """
     holdings.json फ़ाइल से शेयरहोल्डिंग डेटा पढ़ें।
