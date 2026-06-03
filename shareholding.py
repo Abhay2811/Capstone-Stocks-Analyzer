@@ -75,9 +75,9 @@ def ensure_playwright_chromium():
         timeout=180,
     )
 
-def clean_text(value):
 
 def clean_text(value):
+
     if value is None or (isinstance(value, float) and np.isnan(value)):
         return ""
     return re.sub(r"\s+", " ", str(value)).strip()
