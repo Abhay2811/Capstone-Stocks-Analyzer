@@ -333,6 +333,7 @@ def fetch_major_shareholders_from_marketsmithindia(symbol, limit=10):
         url = f"https://marketsmithindia.com/mstool/eval/{symbol}/evaluation.jsp#/"
 
         rows_data = []
+        ensure_playwright_chromium()
 
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
