@@ -1,5 +1,7 @@
 import re
 import time
+import subprocess
+import sys
 from io import StringIO
 from urllib.parse import quote_plus
 
@@ -65,9 +67,17 @@ HEADERS = {
     "Upgrade-Insecure-Requests": "1",
 }
 
+@st.cache_resource(show_spinner=False)
+def ensure_playwright_chromium():
+    subprocess.run(
+        [sys.executable, "-m", "playwright", "install", "chromium"],
+        check=False,
+        timeout=180,
+    )
 
 
 def clean_text(value):
+
     if value is None or (isinstance(value, float) and np.isnan(value)):
         return ""
     return re.sub(r"\s+", " ", str(value)).strip()
@@ -323,9 +333,13 @@ def fetch_major_shareholders_from_marketsmithindia(symbol, limit=10):
         url = f"https://marketsmithindia.com/mstool/eval/{symbol}/evaluation.jsp#/"
 
         rows_data = []
+        ensure_playwright_chromium()
 
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
+            browser = p.chromium.launch(
+                headless=True,
+                args=["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"]
+            )
 
             page = browser.new_page(
                 viewport={"width": 1366, "height": 768}
