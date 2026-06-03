@@ -336,7 +336,10 @@ def fetch_major_shareholders_from_marketsmithindia(symbol, limit=10):
         ensure_playwright_chromium()
 
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
+            browser = p.chromium.launch(
+                headless=True,
+                args=["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"]
+            )
 
             page = browser.new_page(
                 viewport={"width": 1366, "height": 768}
