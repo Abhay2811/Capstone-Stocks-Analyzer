@@ -18,12 +18,8 @@ HEADERS = {
 }
 
 def get_nse_holdings(symbol):
-    """
-    holdings.json फ़ाइल से शेयरहोल्डिंग डेटा पढ़ें।
-    symbol बिना .NS के, जैसे 'TCS'
-    """
+
     try:
-        # फ़ाइल का पूरा पथ (fundamentals.py के समान फ़ोल्डर में)
         json_path = os.path.join(os.path.dirname(__file__), "holdings.json")
         if not os.path.exists(json_path):
             return {}
@@ -33,7 +29,7 @@ def get_nse_holdings(symbol):
     except Exception:
         return {}
 
-# ========== फंडामेंटल डेटा (yfinance + JSON) ==========
+# ==========(yfinance + JSON) ==========
 def get_fundamentals(symbol):
     if not symbol.endswith(".NS") and not symbol.endswith(".BO"):
         ticker = symbol + ".NS"
@@ -64,13 +60,12 @@ def get_fundamentals(symbol):
         fundamentals["Dividend Yield"] = info.get("dividendYield", "N/A")
         fundamentals["Shares Outstanding"] = info.get("sharesOutstanding", None)
 
-        # yfinance से फ़ॉलबैक (ज़्यादातर N/A)
         fundamentals["Promoter Holding"] = info.get("heldPercentInsiders") or info.get("insiderPercentHeld")
         fundamentals["Institutional Holding"] = info.get("heldPercentInstitutions") or info.get("institutionPercentHeld")
         fundamentals["Public Holding"] = info.get("heldPercentPublic")
         fundamentals["FII/FPI"] = info.get("fundOwnership")
 
-        # फाइनेंशियल रेश्यो
+        # Financial Ratio
         if not bs.empty and not is_.empty:
             try:
                 total_equity = bs.loc["Total Equity Gross Minority Interest"].iloc[0]
@@ -94,7 +89,7 @@ def get_fundamentals(symbol):
             except:
                 pass
 
-        # ग्रोथ
+        # Growth
         rev_series = is_.loc["Total Revenue"] if "Total Revenue" in is_.index else None
         profit_series = is_.loc["Net Income"] if "Net Income" in is_.index else None
         if rev_series is not None and len(rev_series) >= 2:
@@ -111,7 +106,7 @@ def get_fundamentals(symbol):
             if len(q_profit) >= 5:
                 fundamentals["Profit Growth"] = ((q_profit.iloc[0] - q_profit.iloc[4]) / abs(q_profit.iloc[4])) * 100
 
-        # 🔥 JSON से सटीक शेयरहोल्डिंग ओवरराइट करें
+
         nse_hold = get_nse_holdings(symbol.replace(".NS", "").replace(".BO", ""))
         if nse_hold:
             fundamentals.update(nse_hold)
@@ -121,7 +116,7 @@ def get_fundamentals(symbol):
 
     return fundamentals
 
-# ========== फंडामेंटल स्कोर ==========
+# ========== Fundamantel Score ==========
 def fundamental_score(fundamentals):
     if not fundamentals:
         return None, "Data Unavailable", "gray"
