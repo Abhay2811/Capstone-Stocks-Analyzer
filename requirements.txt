@@ -8,3 +8,4 @@ scikit-learn
 nsepython
 selenium
 lxml
+playwright
