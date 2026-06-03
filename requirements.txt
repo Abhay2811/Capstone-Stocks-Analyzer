@@ -9,4 +9,3 @@ nsepython
 selenium
 lxml
 playwright
-request
